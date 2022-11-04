@@ -24,6 +24,7 @@ class BankHomepage:
     transactions_button = '//button[@ng-class="btnClass1"]'
     deposit_button = '//button[@ng-class="btnClass2"]'
     withdrawl_button = '//button[@ng-class="btnClass3"]'
+    success_message = '//span[@class="error ng-binding"]'
 
     submit_button = '//button[@type="submit"]'
     input_field = '//div[@class="form-group"]/input'
@@ -55,11 +56,25 @@ class BankHomepage:
     def create_deposit(self, amount):
         deposit_button = self.wait.until(EC.presence_of_element_located(("xpath", self.deposit_button)))
         deposit_button.click()
+        self.wait.until(EC.presence_of_element_located(("xpath", self.input_field)))
+        self.driver.find_element("xpath", self.input_field).click()
+        self.driver.find_element("xpath", self.input_field).send_keys(amount)
+        time.sleep(3)
+        submit_button = self.driver.find_element("xpath", self.submit_button)
+        submit_button.click()
+
+    def create_withdrawl(self, amount):
+        deposit_button = self.wait.until(EC.presence_of_element_located(("xpath", self.withdrawl_button)))
+        deposit_button.click()
         deposit_field = self.wait.until(EC.presence_of_element_located(("xpath", self.input_field)))
         deposit_field.send_keys(amount)
 
         submit_button = self.driver.find_element("xpath", self.submit_button)
         submit_button.click()
+
+    def get_success_message(self):
+        success_message = self.wait.until(EC.presence_of_element_located(("xpath", self.success_message)))
+        return success_message.text
 
     def check_last_deposit(self, amount):
         transactions_button = self.driver.find_element("xpath", self.transactions_button)
