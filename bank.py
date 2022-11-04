@@ -41,53 +41,42 @@ class BankHomepage:
         self.wait = WebDriverWait(self.driver, 10)
 
     def go_to_login_page(self):
-        login = self.wait.until(EC.presence_of_element_located(("xpath", self.customer_login_button)))
-        login.click()
+        self.wait.until(EC.presence_of_element_located(("xpath", self.customer_login_button))).click()
 
     def choose_customer(self, name):
         self.wait.until(EC.presence_of_element_located(("xpath", self.user_select)))
-        select_user_field = Select(self.driver.find_element("xpath", self.user_select))
-        select_user_field.select_by_visible_text(name)
+        Select(self.driver.find_element("xpath", self.user_select)).select_by_visible_text(name)
 
     def login_as_customer(self):
-        login_button = self.driver.find_element("xpath", self.login_button)
-        login_button.click()
+        self.driver.find_element("xpath", self.login_button).click()
 
     def create_deposit(self, amount):
-        deposit_button = self.wait.until(EC.presence_of_element_located(("xpath", self.deposit_button)))
-        deposit_button.click()
+        self.wait.until(EC.presence_of_element_located(("xpath", self.deposit_button))).click()
         self.wait.until(EC.presence_of_element_located(("xpath", self.input_field)))
-        self.driver.find_element("xpath", self.input_field).click()
+        time.sleep(2)
         self.driver.find_element("xpath", self.input_field).send_keys(amount)
-        time.sleep(3)
-        submit_button = self.driver.find_element("xpath", self.submit_button)
-        submit_button.click()
+        self.driver.find_element("xpath", self.submit_button).click()
 
     def create_withdrawl(self, amount):
-        deposit_button = self.wait.until(EC.presence_of_element_located(("xpath", self.withdrawl_button)))
-        deposit_button.click()
-        deposit_field = self.wait.until(EC.presence_of_element_located(("xpath", self.input_field)))
-        deposit_field.send_keys(amount)
+        self.wait.until(EC.presence_of_element_located(("xpath", self.withdrawl_button))).click()
+        withdrawl_field = self.wait.until(EC.presence_of_element_located(("xpath", self.input_field)))
+        withdrawl_field.send_keys(amount)
 
-        submit_button = self.driver.find_element("xpath", self.submit_button)
-        submit_button.click()
+        self.driver.find_element("xpath", self.submit_button).click()
 
     def get_success_message(self):
         success_message = self.wait.until(EC.presence_of_element_located(("xpath", self.success_message)))
         return success_message.text
 
     def check_last_deposit(self, amount):
-        transactions_button = self.driver.find_element("xpath", self.transactions_button)
-        transactions_button.click()
+        self.driver.find_element("xpath", self.transactions_button).click()
 
         sort_by_date_transactions = self.wait.until(EC.presence_of_element_located((
             "xpath", self.sort_by_date_transactions)))
         sort_by_date_transactions.click()
-        deposit_amount = self.wait.until(EC.presence_of_element_located(("xpath", self.first_transaction_amount)))
-        transaction_type = self.driver.find_element("xpath", self.first_transaction_type)
-        assert int(deposit_amount.text) == amount
-        assert transaction_type.text == 'Credit'
+
+        assert int(self.wait.until(EC.presence_of_element_located(("xpath", self.first_transaction_amount))).text) == amount
+        assert self.driver.find_element("xpath", self.first_transaction_type).text == 'Credit'
 
     def logout(self):
-        logout_button = self.driver.find_element("xpath", self.logout_button)
-        logout_button.click()
+        self.driver.find_element("xpath", self.logout_button).click()
