@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from datetime import datetime
+import time
 
 load_dotenv()
 
@@ -27,8 +28,8 @@ class BankHomepage:
     submit_button = '//button[@type="submit"]'
     input_field = '//div[@class="form-group"]/input'
 
-    first_transaction_amount = '//tbody/tr[1]/td[2]/text()'
-    first_transaction_type = '//tbody/tr[1]/td[3]/text()'
+    first_transaction_amount = '//tbody/tr[1]/td[2]'
+    first_transaction_type = '//tbody/tr[1]/td[3]'
     sort_by_date_transactions = '//a[contains(text(), "Date-Time")]'
 
 
@@ -67,11 +68,10 @@ class BankHomepage:
         sort_by_date_transactions = self.wait.until(EC.presence_of_element_located((
             "xpath", self.sort_by_date_transactions)))
         sort_by_date_transactions.click()
-        self.wait.until(EC.presence_of_element_located(("xpath", self.first_transaction_amount)))
-        deposit_amount = self.driver.find_element("xpath", self.deposit_amount)
+        deposit_amount = self.wait.until(EC.presence_of_element_located(("xpath", self.first_transaction_amount)))
         transaction_type = self.driver.find_element("xpath", self.first_transaction_type)
-        assert deposit_amount == amount
-        assert transaction_type == 'Credit'
+        assert int(deposit_amount.text) == amount
+        assert transaction_type.text == 'Credit'
 
     def logout(self):
         logout_button = self.driver.find_element("xpath", self.logout_button)
